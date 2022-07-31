@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById("pong");
 
 const ctx = canvas.getContext('2d');
@@ -8,13 +7,6 @@ let hit = new Audio();
 let wall = new Audio();
 let userScore = new Audio();
 let comScore = new Audio();
-
-hit.src = "sounds/hit.mp3";
-wall.src = "sounds/wall.mp3";
-comScore.src = "sounds/comScore.mp3";
-userScore.src = "sounds/userScore.mp3";
-
-
 const ball = {
     x : canvas.width/2,
     y : canvas.height/2,
@@ -22,42 +14,43 @@ const ball = {
     velocityX : 5,
     velocityY : 5,
     speed : 7,
-    color : "WHITE"
+    color : "red"
 }
 
-// User Paddle
+
 const user = {
-    x : 0, // left side of canvas
-    y : (canvas.height - 100)/2, // -100 the height of paddle
+    x : 0, 
+    y : (canvas.height - 100)/2, 
     width : 10,
     height : 100,
     score : 0,
-    color : "WHITE"
+    color : "blue"
 }
 
 
 const com = {
-    x : canvas.width - 10, // - width of paddle
-    y : (canvas.height - 100)/2, // -100 the height of paddle
+    x : canvas.width - 10,
+    y : (canvas.height - 100)/2,
     width : 10,
     height : 100,
     score : 0,
-    color : "WHITE"
+    color : "orange"
 }
 
-
+// NET
 const net = {
     x : (canvas.width - 2)/2,
     y : 0,
     height : 10,
     width : 2,
-    color : "WHITE"
+    color : "white"
 }
 
 function drawRect(x, y, w, h, color){
     ctx.fillStyle = color;
     ctx.fillRect(x, y, w, h);
 }
+
 
 function drawArc(x, y, r, color){
     ctx.fillStyle = color;
@@ -67,6 +60,7 @@ function drawArc(x, y, r, color){
     ctx.fill();
 }
 
+
 canvas.addEventListener("mousemove", getMousePos);
 
 function getMousePos(evt){
@@ -75,6 +69,7 @@ function getMousePos(evt){
     user.y = evt.clientY - rect.top - user.height/2;
 }
 
+
 function resetBall(){
     ball.x = canvas.width/2;
     ball.y = canvas.height/2;
@@ -82,19 +77,20 @@ function resetBall(){
     ball.speed = 7;
 }
 
-// draw the net
+
 function drawNet(){
     for(let i = 0; i <= canvas.height; i+=15){
         drawRect(net.x, net.y + i, net.width, net.height, net.color);
     }
 }
 
-// draw text
+
 function drawText(text,x,y){
-    ctx.fillStyle = "#FFF";
+    ctx.fillStyle = "green";
     ctx.font = "75px fantasy";
     ctx.fillText(text, x, y);
 }
+
 
 function collision(b,p){
     p.top = p.y;
@@ -113,7 +109,6 @@ function collision(b,p){
 
 function update(){
     
-    // change the score of players, if the ball goes to the left "ball.x<0" computer win, else if "ball.x > canvas.width" the user win
     if( ball.x - ball.radius < 0 ){
         com.score++;
         comScore.play();
@@ -129,32 +124,30 @@ function update(){
     
   
     com.y += ((ball.y - (com.y + com.height/2)))*0.1;
-    
-  
-    if(ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height){
+        if(ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height){
         ball.velocityY = -ball.velocityY;
         wall.play();
     }
-
-    let player = (ball.x + ball.radius < canvas.width/2) ? user : com;
     
+    
+    let player = (ball.x + ball.radius < canvas.width/2) ? user : com;
+ 
     if(collision(ball,player)){
-      
+       
         hit.play();
-       
+        
         let collidePoint = (ball.y - (player.y + player.height/2));
-       
+ 
         collidePoint = collidePoint / (player.height/2);
         
-      
+       
         let angleRad = (Math.PI/4) * collidePoint;
-        
         
         let direction = (ball.x + ball.radius < canvas.width/2) ? 1 : -1;
         ball.velocityX = direction * ball.speed * Math.cos(angleRad);
         ball.velocityY = ball.speed * Math.sin(angleRad);
         
-        // speed up the ball everytime a paddle hits it.
+       
         ball.speed += 0.1;
     }
 }
@@ -162,7 +155,7 @@ function update(){
 
 function render(){
     
-    
+   
     drawRect(0, 0, canvas.width, canvas.height, "#000");
     
     
@@ -171,13 +164,13 @@ function render(){
    
     drawText(com.score,3*canvas.width/4,canvas.height/5);
     
-    
+   
     drawNet();
     
-    
+   
     drawRect(user.x, user.y, user.width, user.height, user.color);
     
-    
+   
     drawRect(com.x, com.y, com.width, com.height, com.color);
     
     
@@ -187,7 +180,6 @@ function game(){
     update();
     render();
 }
-
 let framePerSecond = 50;
 
 
